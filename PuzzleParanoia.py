@@ -10,7 +10,7 @@ def main():
         puzzle[i] = int(input("Enter numbers from 0 to " +
                               str(rows * cols - 1) + " one by one in any order: "))
     # move the bottom left tile to the right
-    puzzle = moveTile(puzzle, 8, "right")
+    puzzle = moveTile(puzzle, "down")
     # output the new puzzle
     for i in range(rows):
         for j in range(cols):
@@ -22,40 +22,48 @@ def main():
 # puzzle is a list of int with cols*rows elements
 
 
-def moveTile(puzzle, tile, direction):
+def moveTile(puzzle, direction):
     # tile not 0
-    if tile == 0:
-        return puzzle
+    # if tile == 0:
+    #     return puzzle
     # find index
-    tileIndex = puzzle.index(tile)
+    zeroIndex = puzzle.index(0)
     # if moving down
     if direction == "down":
-        # tile is not on the last rows, if not on the last row, the tile below this tile needs to be 0
-        if tileIndex + cols < length and puzzle[tileIndex + cols] == 0:
+        # Zero is not on the last rows
+        if zeroIndex + cols < length:
             # switches 0 and the tile
-            puzzle[tileIndex + cols] = tile
-            puzzle[tileIndex] = 0
+            puzzle[zeroIndex] = puzzle[zeroIndex + cols]
+            puzzle[zeroIndex + cols] = 0
+        else:
+            print("Cannot move down")
 
     # if moving up
     if direction == "up":
-        if tileIndex - cols >= 0 and puzzle[tileIndex - cols] == 0:
+        if zeroIndex - cols >= 0:
            # switches 0 and the tile
-            puzzle[tileIndex - cols] = tile
-            puzzle[tileIndex] = 0
+            puzzle[zeroIndex] = puzzle[zeroIndex - cols]
+            puzzle[zeroIndex - cols] = 0
+        else:
+            print("Cannot move up")
 
     # if moving left
     if direction == "left":
-        if tileIndex % cols != 0 and puzzle[tileIndex - 1] == 0:
+        if zeroIndex % cols != 0:
             # switches 0 and the tile
-            puzzle[tileIndex - 1] = tile
-            puzzle[tileIndex] = 0
+            puzzle[zeroIndex] = puzzle[zeroIndex - 1]
+            puzzle[zeroIndex - 1] = 0
+        else:
+            print("Cannot move left")
 
     # if moving right
     if direction == "right":
-        if tileIndex % cols != cols - 1 and puzzle[tileIndex + 1] == 0:
+        if zeroIndex % cols != cols - 1:
             # switches 0 and the tile
-            puzzle[tileIndex + 1] = tile
-            puzzle[tileIndex] = 0
+            puzzle[zeroIndex] = puzzle[zeroIndex + 1]
+            puzzle[zeroIndex + 1] = 0
+        else:
+            print("Cannot move right")
 
     return puzzle
 
