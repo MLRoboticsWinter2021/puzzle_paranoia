@@ -1,8 +1,5 @@
 import gym
-<<<<<<< HEAD
-=======
 import numpy as np
->>>>>>> q_learning end of second video
 
 env = gym.make("MountainCar-v0")
 
