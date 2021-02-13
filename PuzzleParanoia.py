@@ -63,12 +63,9 @@ class Puzzle:
             print()
 
 
+############################################# Real code
 
-
-
-# Real code
-
-# initialize qTable
+## initialize qTable
 
 for i in range(NUMBER_EPISODES):
 
@@ -84,25 +81,25 @@ for i in range(NUMBER_EPISODES):
         # take the action
         puzzle.moveTile(action)
 
-        # calculate reward
+        ## calculate reward
 
-        # update q
+        ## update q
 
         # render   
 
-        # check if done
+        ## check if done
             # if done, break
         
-        puzzle.printPuzzle()
         print(f'We are taking this: {action}')
+        puzzle.printPuzzle()
         print("-------------------")
 
-    # add the reward to the list of reward
+    ## add the reward to the list of reward
 
     # epsilon decay
 
-# averge rewards
+## averge rewards
 
-# plot rewards
+## plot rewards
 
 # save qTable
