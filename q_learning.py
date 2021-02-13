@@ -1,6 +1,4 @@
 import gym
-import sys
-sys.path.append('/Users/haoranwang/opt/anaconda3/lib/python3.8/site-packages')
 
 env = gym.make("MountainCar-v0")
 env.reset()
