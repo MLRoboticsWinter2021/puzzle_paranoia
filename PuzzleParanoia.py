@@ -27,7 +27,23 @@ startQTable = None
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
 # puzzle is a list of int with cols*rows elements
+class Puzzle:
+    def __init__(self):
+        self.tiles = [0 for x in range(rows * cols)]
+        for i in range(rows*cols):
+            self.tiles[i] = i
+        random.shuffle(self.tiles)
 
+    def moveTile(self, direction):
+        # find index
+        zeroIndex = self.tiles.index(0)
+        # if moving down
+        if direction == 0: #down
+            # Zero is not on the last rows
+            if zeroIndex + cols < length:
+                # switches 0 and the tile
+                self.tiles[zeroIndex] = self.tiles[zeroIndex + cols]
+                self.tiles[zeroIndex + cols] = 0
 
 class Puzzle:
     def __init__(self):
