@@ -10,17 +10,19 @@ rows, cols = 3, 3
 length = rows*cols
 
 
-COMPLETION_REWARD = 10
+COMPLETION_REWARD = 100
 MOVE_PENALTY = 1
-NUMBER_EPISODES = 1
+NUMBER_EPISODES = 50
 SHOW_EVERY = 3000
-MOVES_PER_EPISODE = 25
+MOVES_PER_EPISODE = 750
 
-epsilon = 0.9
+epsilon = 0.75
 EPS_DECAY = 0.9998
 
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.15
 DISCOUNT = 0.95
+
+startQTable = None
 
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
@@ -113,23 +115,36 @@ def initQTable(r):
         initQTable(newRange)
 
 
-ran = [i for i in range(length)]
-initQTable(ran)
-print(len(qTable))
+if startQTable is None:
+    ran = [i for i in range(length)]
+    initQTable(ran)
+else:
+    with open(startQTable, "rb") as f:
+        qTable = pickle.load(f)
 
+episodeRewards = []
 for i in range(NUMBER_EPISODES):
 
     # make puzzle
     puzzle = Puzzle()
 
+    # render or not
+    if i % SHOW_EVERY == 0:
+        show = True
+    else:
+        show = False
+
+    episodeReward = 0
+
     for j in range(MOVES_PER_EPISODE):
         # get state
         obs = puzzle.state()
 
-        # decide to render or not
-
         # choose an action, based on epsilon
-        action = np.random.randint(0, 4)
+        if np.random.random() > epsilon:
+            action = np.argmax(qTable[obs])
+        else:
+            action = np.random.randint(0, 4)
 
         # take the action
         puzzle.moveTile(action)
@@ -153,22 +168,38 @@ for i in range(NUMBER_EPISODES):
                 LEARNING_RATE * (reward + DISCOUNT * maxFutureQ)
         qTable[obs][action] = newQ
 
-        # render
+        episodeReward += reward
 
         # check if done
         # if done, break
+        if reward == COMPLETION_REWARD:
+            print(f"We got a success on episode {i}")
+            break
 
-        print(f'We are taking this: {action}')
+    if show:
+        print('--------------')
         puzzle.printPuzzle()
-        print(f'We are taking this: {action}')
-        print("-------------------")
 
     # add the reward to the list of reward
+    episodeRewards.append(episodeReward)
 
     # epsilon decay
+    epsilon *= EPS_DECAY
 
 # average rewards
+movingAvg = np.convolve(episodeRewards, np.ones(
+    (SHOW_EVERY,))/SHOW_EVERY, mode='valid')
 
 # plot rewards
+plt.plot([i for i in range(len(movingAvg))], movingAvg)
+plt.ylabel(f"Reward {SHOW_EVERY}ma")
+plt.xlabel("episode #")
+plt.show()
+
+# print pickle.__version__
 
 # save qTable
+with open(f"qTable-{int(time.time())}.pickle", 'wb') as f:
+    print("success")
+    pickle.dump(qTable, f)
+    print("success")
