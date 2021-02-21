@@ -12,9 +12,9 @@ length = rows*cols
 
 COMPLETION_REWARD = 100
 MOVE_PENALTY = 1
-NUMBER_EPISODES = 50000
+NUMBER_EPISODES = 100000
 SHOW_EVERY = 5000
-MOVES_PER_EPISODE = 750
+MOVES_PER_EPISODE = 200
 
 epsilon = 0.75
 EPS_DECAY = 0.9999
@@ -22,7 +22,7 @@ EPS_DECAY = 0.9999
 LEARNING_RATE = 0.15
 DISCOUNT = 0.95
 
-startQTable = "qTable-1613864909.pickle"
+startQTable = "qTable-1613866966.pickle"
 
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
@@ -30,10 +30,12 @@ startQTable = "qTable-1613864909.pickle"
 
 
 def checkSolvable(array):
+    temparray = array[:]
+    temparray.remove(0)
     inversions = 0
-    for i in range(length):
-        for j in range(length):
-            if array[j] > array[i]:
+    for i in range(length-1):
+        for j in range(i + 1, length-1, 1):
+            if temparray[j] > temparray[i]:
                 inversions += 1
     if inversions % 2 == 1:
         return False
@@ -49,9 +51,6 @@ class Puzzle:
         random.shuffle(self.tiles)
 
         while not checkSolvable(self.tiles):
-            self.tiles = [0 for x in range(rows * cols)]
-            for i in range(rows*cols):
-                self.tiles[i] = i
             random.shuffle(self.tiles)
 
     def moveTile(self, direction):
@@ -123,6 +122,7 @@ else:
         qTable = pickle.load(f)
 
 episodeRewards = []
+numberOfCompletions = 0
 for i in range(NUMBER_EPISODES):
 
     # make puzzle
@@ -130,8 +130,10 @@ for i in range(NUMBER_EPISODES):
 
     # render or not
     if i % SHOW_EVERY == 0:
-        print(f"on #{i}, epsilon is {epsilon}")
+        print(
+            f"on #{i}, epsilon is {epsilon}, number of completions in this set is {numberOfCompletions}")
         show = True
+        numberOfCompletions = 0
     else:
         show = False
 
@@ -174,7 +176,8 @@ for i in range(NUMBER_EPISODES):
         # check if done
         # if done, break
         if reward == COMPLETION_REWARD:
-            print(f"We got a success on episode {i}")
+            #print(f"We got a success on episode {i}")
+            numberOfCompletions += 1
             break
 
     if show:
