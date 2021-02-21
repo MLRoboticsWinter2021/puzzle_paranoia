@@ -12,40 +12,34 @@ length = rows*cols
 
 COMPLETION_REWARD = 100
 MOVE_PENALTY = 1
-NUMBER_EPISODES = 50
-SHOW_EVERY = 3000
+NUMBER_EPISODES = 50000
+SHOW_EVERY = 5000
 MOVES_PER_EPISODE = 750
 
 epsilon = 0.75
-EPS_DECAY = 0.9998
+EPS_DECAY = 0.9999
 
 LEARNING_RATE = 0.15
 DISCOUNT = 0.95
 
-startQTable = None
+startQTable = "qTable-1613864909.pickle"
 
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
 # puzzle is a list of int with cols*rows elements
 
 
-class Puzzle:
-    def __init__(self):
-        self.tiles = [0 for x in range(rows * cols)]
-        for i in range(rows*cols):
-            self.tiles[i] = i
-        random.shuffle(self.tiles)
+def checkSolvable(array):
+    inversions = 0
+    for i in range(length):
+        for j in range(length):
+            if array[j] > array[i]:
+                inversions += 1
+    if inversions % 2 == 1:
+        return False
+    else:
+        return True
 
-    def moveTile(self, direction):
-        # find index
-        zeroIndex = self.tiles.index(0)
-        # if moving down
-        if direction == 0:  # down
-            # Zero is not on the last rows
-            if zeroIndex + cols < length:
-                # switches 0 and the tile
-                self.tiles[zeroIndex] = self.tiles[zeroIndex + cols]
-                self.tiles[zeroIndex + cols] = 0
 
 class Puzzle:
     def __init__(self):
@@ -53,6 +47,12 @@ class Puzzle:
         for i in range(rows*cols):
             self.tiles[i] = i
         random.shuffle(self.tiles)
+
+        while not checkSolvable(self.tiles):
+            self.tiles = [0 for x in range(rows * cols)]
+            for i in range(rows*cols):
+                self.tiles[i] = i
+            random.shuffle(self.tiles)
 
     def moveTile(self, direction):
         # find index
@@ -128,23 +128,15 @@ for i in range(NUMBER_EPISODES):
     # make puzzle
     puzzle = Puzzle()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> epsilon
     # render or not
     if i % SHOW_EVERY == 0:
+        print(f"on #{i}, epsilon is {epsilon}")
         show = True
     else:
         show = False
 
     episodeReward = 0
 
-<<<<<<< HEAD
-=======
->>>>>>> puzzle class enabled
-=======
->>>>>>> epsilon
     for j in range(MOVES_PER_EPISODE):
         # get state
         obs = puzzle.state()
@@ -205,10 +197,10 @@ plt.ylabel(f"Reward {SHOW_EVERY}ma")
 plt.xlabel("episode #")
 plt.show()
 
-# print pickle.__version__
-
 # save qTable
-with open(f"qTable-{int(time.time())}.pickle", 'wb') as f:
-    print("success")
-    pickle.dump(qTable, f)
-    print("success")
+if startQTable == None:
+    with open(f"qTable-{int(time.time())}.pickle", "wb") as f:
+        pickle.dump(qTable, f)
+else:
+    with open(startQTable, "wb") as f:
+        pickle.dump(qTable, f)
