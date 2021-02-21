@@ -22,7 +22,7 @@ EPS_DECAY = 0.9999
 LEARNING_RATE = 0.15
 DISCOUNT = 0.95
 
-startQTable = "qTable-1613864179.pickle"
+startQTable = "qTable-1613864909.pickle"
 
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
