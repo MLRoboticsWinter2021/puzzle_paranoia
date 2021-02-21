@@ -12,21 +12,35 @@ length = rows*cols
 
 COMPLETION_REWARD = 100
 MOVE_PENALTY = 1
-NUMBER_EPISODES = 50
-SHOW_EVERY = 3000
+NUMBER_EPISODES = 50000
+SHOW_EVERY = 5000
 MOVES_PER_EPISODE = 750
 
 epsilon = 0.75
-EPS_DECAY = 0.9998
+EPS_DECAY = 0.9999
 
 LEARNING_RATE = 0.15
 DISCOUNT = 0.95
 
-startQTable = None
+startQTable = "qTable-1613864179.pickle"
 
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
 # puzzle is a list of int with cols*rows elements
+
+
+def checkSolvable(array):
+    inversions = 0
+    for i in range(length):
+        for j in range(length):
+            if array[j] > array[i]:
+                inversions += 1
+    if inversions % 2 == 1:
+        return False
+    else:
+        return True
+
+
 class Puzzle:
     def __init__(self):
         self.tiles = [0 for x in range(rows * cols)]
@@ -34,11 +48,17 @@ class Puzzle:
             self.tiles[i] = i
         random.shuffle(self.tiles)
 
+        while not checkSolvable(self.tiles):
+            self.tiles = [0 for x in range(rows * cols)]
+            for i in range(rows*cols):
+                self.tiles[i] = i
+            random.shuffle(self.tiles)
+
     def moveTile(self, direction):
         # find index
         zeroIndex = self.tiles.index(0)
         # if moving down
-        if direction == 0: #down
+        if direction == 0:  # down
             # Zero is not on the last rows
             if zeroIndex + cols < length:
                 # switches 0 and the tile
@@ -194,10 +214,10 @@ plt.ylabel(f"Reward {SHOW_EVERY}ma")
 plt.xlabel("episode #")
 plt.show()
 
-# print pickle.__version__
-
 # save qTable
-with open(f"qTable-{int(time.time())}.pickle", 'wb') as f:
-    print("success")
-    pickle.dump(qTable, f)
-    print("success")
+if startQTable == None:
+    with open(f"qTable-{int(time.time())}.pickle", "wb") as f:
+        pickle.dump(qTable, f)
+else:
+    with open(startQTable, "wb") as f:
+        pickle.dump(qTable, f)
