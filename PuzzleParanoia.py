@@ -14,7 +14,7 @@ COMPLETION_REWARD = 100
 MOVE_PENALTY = 1
 NUMBER_EPISODES = 100000
 SHOW_EVERY = 5000
-MOVES_PER_EPISODE = 200
+MOVES_PER_EPISODE = 500
 
 epsilon = 0.75
 EPS_DECAY = 0.9999
@@ -22,7 +22,7 @@ EPS_DECAY = 0.9999
 LEARNING_RATE = 0.15
 DISCOUNT = 0.95
 
-startQTable = "qTable-1613866966.pickle"
+startQTable = None
 
 # Tile is a element in list puzzle,
 # direction is one of the following: "down", "up", "left", "right"
