@@ -9,7 +9,6 @@ import time
 rows, cols = 3, 3
 length = rows*cols
 
-
 COMPLETION_REWARD = 100
 MOVE_PENALTY = 1
 NUMBER_EPISODES = 100000
@@ -28,7 +27,6 @@ startQTable = "qTable-1613866966.pickle"
 # direction is one of the following: "down", "up", "left", "right"
 # puzzle is a list of int with cols*rows elements
 
-
 def checkSolvable(array):
     temparray = array[:]
     temparray.remove(0)
@@ -42,17 +40,19 @@ def checkSolvable(array):
     else:
         return True
 
-
 class Puzzle:
-    def __init__(self):
-        self.tiles = [0 for x in range(rows * cols)]
-        for i in range(rows*cols):
-            self.tiles[i] = i
-        random.shuffle(self.tiles)
-
-        while not checkSolvable(self.tiles):
+    def __init__(self, tiles=[]):
+        if not tiles:
+            self.tiles = [0 for x in range(rows * cols)]
+            for i in range(rows*cols):
+                self.tiles[i] = i
             random.shuffle(self.tiles)
 
+            while not checkSolvable(self.tiles):
+                random.shuffle(self.tiles)
+        else:
+            self.tiles = tiles
+        
     def moveTile(self, direction):
         # find index
         zeroIndex = self.tiles.index(0)
